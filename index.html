@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bioquímica Básica — Testosterona</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <section id="drug-menu" class="drug-menu">
+      <header class="header">
+        <div class="header__text">
+          <h1 class="header__title">Bioquímica Básica</h1>
+          <p class="header__subtitle">Metabolismo hormonal · Guía interactiva</p>
+        </div>
+        <div class="header__actions user-panel" id="user-panel">
+          <div class="user-panel__guest" id="user-guest">
+            <button type="button" class="view-tab user-panel__register" id="btn-open-register">
+              Registrarme
+            </button>
+          </div>
+          <div class="user-panel__logged" id="user-logged" hidden>
+            <div class="user-panel__identity header__badge" id="user-identity">
+              <span class="user-panel__name" id="user-badge-name">Alumno</span>
+              <span class="user-panel__id" id="user-badge-id"></span>
+            </div>
+            <div class="user-panel__buttons">
+              <button type="button" class="view-tab header__back" id="btn-my-metrics">Mis métricas</button>
+              <button type="button" class="view-tab view-tab--ghost" id="btn-switch-user">Cambiar usuario</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <p class="drug-menu__notice" id="drug-menu-notice">
+        Regístrate con tu matrícula. Al terminar, descarga el PDF de métricas y envíaselo a tu profesor.
+      </p>
+
+      <nav class="drug-menu__choices" aria-label="Temas disponibles">
+        <button type="button" class="view-tab drug-picker" data-drug="testosterona">
+          <span class="drug-picker__title">Testosterona</span>
+          <span class="drug-picker__hint">Síntesis · Obesidad · Músculo · CV · Envejecimiento</span>
+        </button>
+      </nav>
+    </section>
+
+    <div id="app-study" class="app-study" hidden>
+      <header class="header">
+        <div class="header__text">
+          <h1 class="header__title" id="drug-title">Testosterona</h1>
+          <p class="header__subtitle" id="drug-subtitle"></p>
+        </div>
+        <div class="header__actions">
+          <button type="button" class="view-tab header__back" id="btn-back-menu">← Temas</button>
+          <span class="header__badge" id="module-badge">Módulo activo</span>
+        </div>
+      </header>
+
+      <div id="study-content" class="study-content">
+        <nav class="view-tabs" role="tablist" aria-label="Secciones de estudio">
+          <button type="button" class="view-tab view-tab--active" id="tab-synthesis" role="tab" aria-selected="true" aria-controls="view-synthesis" data-view="synthesis">
+            Síntesis
+          </button>
+          <button type="button" class="view-tab" id="tab-obesity" role="tab" aria-selected="false" data-view="obesity">
+            Obesidad y testosterona
+          </button>
+          <button type="button" class="view-tab" id="tab-muscle" role="tab" aria-selected="false" data-view="muscle">
+            Testosterona y músculo
+          </button>
+          <button type="button" class="view-tab" id="tab-cardiovascular" role="tab" aria-selected="false" data-view="cardiovascular">
+            Testosterona y salud cardiovascular
+          </button>
+          <button type="button" class="view-tab" id="tab-aging" role="tab" aria-selected="false" data-view="aging">
+            Testosterona y envejecimiento
+          </button>
+        </nav>
+
+        <main class="main">
+          <section class="diagram-panel" aria-label="Diagrama interactivo">
+            <h2 class="diagram-panel__heading" id="diagram-heading">Ruta clínico-nutricional</h2>
+            <p class="diagram-panel__source" id="diagram-source"></p>
+            <div class="diagram diagram--synthesis" id="synthesis-diagram" role="tablist" aria-label="Diagrama de síntesis"></div>
+            <div class="diagram diagram--muscle" id="muscle-diagram" role="tablist" aria-label="Diagrama testosterona y músculo" hidden></div>
+            <div class="diagram diagram--cardiovascular" id="cardiovascular-diagram" role="tablist" aria-label="Diagrama testosterona y salud cardiovascular" hidden></div>
+            <div class="diagram diagram--aging" id="aging-diagram" role="tablist" aria-label="Diagrama testosterona y envejecimiento" hidden></div>
+          </section>
+          <aside class="study-panel" aria-live="polite">
+            <article class="study-card" id="synthesis-study-card">
+              <header class="study-card__header">
+                <span class="study-card__step" id="synthesis-study-step">Paso 1 de 4</span>
+                <h2 class="study-card__title" id="synthesis-study-title">Síntesis</h2>
+              </header>
+              <ul class="study-card__bullets" id="synthesis-study-bullets"></ul>
+              <div class="study-card__tip">
+                <span class="study-card__tip-label">Ojo clínico</span>
+                <p class="study-card__tip-text" id="synthesis-study-tip-text"></p>
+              </div>
+            </article>
+            <article class="study-card" id="obesity-study-card" hidden>
+              <header class="study-card__header">
+                <span class="study-card__step" id="obesity-study-step">Paso 1 de 4</span>
+                <h2 class="study-card__title" id="obesity-study-title">Obesidad y testosterona</h2>
+              </header>
+              <p class="study-card__section-label">Síntesis</p>
+              <ul class="study-card__bullets" id="obesity-synthesis-bullets"></ul>
+              <p class="study-card__section-label study-card__section-label--obesity">Impacto de la obesidad</p>
+              <ul class="study-card__bullets study-card__bullets--obesity" id="obesity-impact-bullets"></ul>
+              <div class="study-card__tip">
+                <span class="study-card__tip-label">Ojo clínico</span>
+                <p class="study-card__tip-text" id="obesity-study-tip-text"></p>
+              </div>
+            </article>
+            <article class="study-card" id="muscle-study-card" hidden>
+              <header class="study-card__header">
+                <span class="study-card__step" id="muscle-study-step">Paso 1 de 4</span>
+                <h2 class="study-card__title" id="muscle-study-title">Testosterona y músculo</h2>
+              </header>
+              <ul class="study-card__bullets" id="muscle-study-bullets"></ul>
+              <div class="study-card__tip">
+                <span class="study-card__tip-label">Ojo clínico</span>
+                <p class="study-card__tip-text" id="muscle-study-tip-text"></p>
+              </div>
+            </article>
+            <article class="study-card" id="cardiovascular-study-card" hidden>
+              <header class="study-card__header">
+                <span class="study-card__step" id="cardiovascular-study-step">Paso 1 de 4</span>
+                <h2 class="study-card__title" id="cardiovascular-study-title">Testosterona y salud cardiovascular</h2>
+              </header>
+              <ul class="study-card__bullets" id="cardiovascular-study-bullets"></ul>
+              <div class="study-card__tip">
+                <span class="study-card__tip-label">Ojo clínico</span>
+                <p class="study-card__tip-text" id="cardiovascular-study-tip-text"></p>
+              </div>
+            </article>
+            <article class="study-card" id="aging-study-card" hidden>
+              <header class="study-card__header">
+                <span class="study-card__step" id="aging-study-step">Paso 1 de 4</span>
+                <h2 class="study-card__title" id="aging-study-title">Testosterona y envejecimiento</h2>
+              </header>
+              <ul class="study-card__bullets" id="aging-study-bullets"></ul>
+              <div class="study-card__tip">
+                <span class="study-card__tip-label">Ojo clínico</span>
+                <p class="study-card__tip-text" id="aging-study-tip-text"></p>
+              </div>
+            </article>
+          </aside>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="professor-overlay" hidden aria-hidden="true">
+    <div class="modal modal--wide professor-panel" id="professor-panel" role="dialog" aria-modal="true" aria-labelledby="professor-title">
+      <button class="modal__close" id="professor-close" type="button" aria-label="Cerrar panel del profesor"><span aria-hidden="true">X</span></button>
+      <h3 class="modal__acronym" id="professor-title">Panel del profesor</h3>
+      <p class="modal__full-name" id="professor-subtitle">Datos del servidor · todos los alumnos</p>
+      <form class="professor-auth" id="professor-auth" hidden>
+        <label class="register-form__label" for="professor-key-input">Clave de profesor</label>
+        <input class="register-form__input" id="professor-key-input" type="password" autocomplete="off" placeholder="La configuraste al iniciar el servidor">
+        <button type="submit" class="view-tab register-form__submit" id="professor-key-submit">Ver progreso de todos</button>
+      </form>
+      <div class="professor-grid" id="professor-stats"></div>
+      <p class="professor-hint">Atajo: Shift + P · Clave por defecto: <code>bioquim-prof</code></p>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="user-register-overlay" hidden aria-hidden="true">
+    <div class="modal" id="user-register-modal" role="dialog" aria-modal="true" aria-labelledby="register-title">
+      <button class="modal__close" id="register-close" type="button" aria-label="Cerrar"><span aria-hidden="true">X</span></button>
+      <h3 class="modal__acronym" id="register-title">Entrar como alumno</h3>
+      <p class="modal__full-name">Tu matrícula es tu ID único. Mismo navegador + misma matrícula = mismo progreso.</p>
+      <div class="register-device-users" id="register-device-users" hidden></div>
+      <form class="register-form" id="register-form">
+        <label class="register-form__label" for="register-id">Matrícula o ID universitario</label>
+        <input class="register-form__input" id="register-id" name="studentId" type="text" required minlength="3" maxlength="32" autocomplete="username" placeholder="Ej. A01234567">
+        <label class="register-form__label" for="register-name">Nombre completo</label>
+        <input class="register-form__input" id="register-name" name="name" type="text" required minlength="2" maxlength="80" autocomplete="name" placeholder="Ej. Daniel Gómez">
+        <p class="register-form__hint">Recorre las 5 pestañas y descarga el PDF de métricas para tu profesor.</p>
+        <p class="register-form__feedback" id="register-feedback" hidden role="status" aria-live="polite"></p>
+        <button type="submit" class="view-tab register-form__submit">Entrar y guardar métricas</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="user-metrics-overlay" hidden aria-hidden="true">
+    <div class="modal modal--wide" id="user-metrics-modal" role="dialog" aria-modal="true" aria-labelledby="user-metrics-title">
+      <button class="modal__close" id="user-metrics-close" type="button" aria-label="Cerrar"><span aria-hidden="true">X</span></button>
+      <h3 class="modal__acronym" id="user-metrics-title">Mis métricas</h3>
+      <p class="modal__full-name" id="user-metrics-subtitle"></p>
+      <div class="professor-grid" id="user-metrics-stats"></div>
+      <div class="user-metrics-actions">
+        <button type="button" class="view-tab user-metrics-actions__pdf" id="btn-download-metrics-pdf">
+          Descargar PDF para el profesor
+        </button>
+        <p class="user-metrics-actions__hint">Incluye pestañas visitadas y progreso en Síntesis, Obesidad, Músculo, Salud cardiovascular y Envejecimiento.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-overlay" hidden aria-hidden="true">
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-acronym" aria-describedby="modal-body">
+      <button class="modal__close" id="modal-close" type="button" aria-label="Cerrar"><span aria-hidden="true">X</span></button>
+      <h3 class="modal__acronym" id="modal-acronym"></h3>
+      <p class="modal__full-name" id="modal-full-name"></p>
+      <div class="modal__body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+  <script>
+    window.FARMA_API_URL = "";
+  </script>
+  <script src="data-drugs.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
