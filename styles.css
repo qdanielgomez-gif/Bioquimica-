@@ -577,32 +577,32 @@ body {
   min-width: 140px;
 }
 
-.diagram--aging .node__label-box,
-.diagram--aging .node__sublabel {
+.diagram--senescence .node__label-box,
+.diagram--senescence .node__sublabel {
   max-width: min(320px, 94vw);
 }
 
-.diagram--aging .node__label,
-.diagram--aging .node__sublabel {
+.diagram--senescence .node__label,
+.diagram--senescence .node__sublabel {
   white-space: normal;
   overflow-wrap: normal;
   word-break: keep-all;
 }
 
-.diagram--aging .node[data-color="peach"] .node__shape--pill,
-.diagram--aging .node[data-color="peach"] .node__shape--rounded,
-.diagram--aging .node[data-color="peach"] .node__shape--circle { background: var(--syn-peach); color: var(--black); }
+.diagram--senescence .node[data-color="peach"] .node__shape--pill,
+.diagram--senescence .node[data-color="peach"] .node__shape--rounded,
+.diagram--senescence .node[data-color="peach"] .node__shape--circle { background: var(--syn-peach); color: var(--black); }
 
-.diagram--aging .node[data-color="lilac"] .node__shape--rounded,
-.diagram--aging .node[data-color="lilac"] .node__shape--circle { background: var(--syn-lilac); color: var(--black); }
+.diagram--senescence .node[data-color="lilac"] .node__shape--rounded,
+.diagram--senescence .node[data-color="lilac"] .node__shape--circle { background: var(--syn-lilac); color: var(--black); }
 
-.diagram--aging .node[data-color="mint"] .node__shape--rounded,
-.diagram--aging .node[data-color="mint"] .node__shape--circle { background: var(--syn-mint); color: var(--black); }
+.diagram--senescence .node[data-color="mint"] .node__shape--rounded,
+.diagram--senescence .node[data-color="mint"] .node__shape--circle { background: var(--syn-mint); color: var(--black); }
 
-.diagram--aging .node[data-color="slate"] .node__shape--rounded,
-.diagram--aging .node[data-color="slate"] .node__shape--circle { background: var(--syn-slate); color: var(--white); }
+.diagram--senescence .node[data-color="slate"] .node__shape--rounded,
+.diagram--senescence .node[data-color="slate"] .node__shape--circle { background: var(--syn-slate); color: var(--white); }
 
-.diagram--aging .node__shape--pill {
+.diagram--senescence .node__shape--pill {
   min-width: 140px;
 }
 

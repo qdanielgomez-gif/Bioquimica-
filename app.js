@@ -8,17 +8,17 @@ let SYNTHESIS_DATA = null;
 let OBESITY_DATA = null;
 let MUSCLE_DATA = null;
 let CARDIOVASCULAR_DATA = null;
-let AGING_DATA = null;
+let SENESCENCE_DATA = null;
 let synthesisStepById = {};
 let muscleStepById = {};
 let cardiovascularStepById = {};
-let agingStepById = {};
+let senescenceStepById = {};
 
 let activeView = "synthesis";
 let activeSynthesisStepId = null;
 let activeMuscleStepId = null;
 let activeCardiovascularStepId = null;
-let activeAgingStepId = null;
+let activeSenescenceStepId = null;
 let lastFocusedElement = null;
 
 let lockSelectedTermId = null;
@@ -30,7 +30,7 @@ const DIAGRAM_LAYERS = {
   synthesis: "synthesis",
   muscle: "muscle",
   cardiovascular: "cardiovascular",
-  aging: "aging",
+  senescence: "senescence",
 };
 
 const els = {
@@ -67,7 +67,7 @@ const els = {
   synthesisDiagram: document.getElementById("synthesis-diagram"),
   muscleDiagram: document.getElementById("muscle-diagram"),
   cardiovascularDiagram: document.getElementById("cardiovascular-diagram"),
-  agingDiagram: document.getElementById("aging-diagram"),
+  senescenceDiagram: document.getElementById("senescence-diagram"),
   main: document.querySelector(".main"),
   studyPanel: document.querySelector(".study-panel"),
   diagramPanel: document.querySelector(".diagram-panel"),
@@ -92,11 +92,11 @@ const els = {
   cardiovascularStudyTitle: document.getElementById("cardiovascular-study-title"),
   cardiovascularStudyBullets: document.getElementById("cardiovascular-study-bullets"),
   cardiovascularStudyTipText: document.getElementById("cardiovascular-study-tip-text"),
-  agingStudyCard: document.getElementById("aging-study-card"),
-  agingStudyStep: document.getElementById("aging-study-step"),
-  agingStudyTitle: document.getElementById("aging-study-title"),
-  agingStudyBullets: document.getElementById("aging-study-bullets"),
-  agingStudyTipText: document.getElementById("aging-study-tip-text"),
+  senescenceStudyCard: document.getElementById("senescence-study-card"),
+  senescenceStudyStep: document.getElementById("senescence-study-step"),
+  senescenceStudyTitle: document.getElementById("senescence-study-title"),
+  senescenceStudyBullets: document.getElementById("senescence-study-bullets"),
+  senescenceStudyTipText: document.getElementById("senescence-study-tip-text"),
   physiologyLock: document.getElementById("physiology-lock"),
   studyContent: document.getElementById("study-content"),
   lockTitle: document.getElementById("lock-title"),
@@ -126,12 +126,12 @@ const VIEW_LABELS = {
   obesity: "Obesidad y testosterona",
   muscle: "Testosterona y músculo",
   cardiovascular: "Testosterona y salud cardiovascular",
-  aging: "Testosterona y envejecimiento",
+  senescence: "Testosterona y senescencia celular",
 };
 
-const TAB_VIEW_IDS = ["synthesis", "obesity", "muscle", "cardiovascular", "aging"];
+const TAB_VIEW_IDS = ["synthesis", "obesity", "muscle", "cardiovascular", "senescence"];
 
-const SECONDARY_VIEW_IDS = new Set(["muscle", "cardiovascular", "aging"]);
+const SECONDARY_VIEW_IDS = new Set(["muscle", "cardiovascular", "senescence"]);
 
 const STORAGE_KEY = "bioquimicaBasica_stats";
 const USERS_KEY = "bioquimicaBasica_users";
@@ -386,13 +386,13 @@ function createDefaultDrugStats() {
       obesity: 0,
       muscle: 0,
       cardiovascular: 0,
-      aging: 0,
+      senescence: 0,
     },
     synthesisSteps: [],
     obesitySteps: [],
     muscleSteps: [],
     cardiovascularSteps: [],
-    agingSteps: [],
+    senescenceSteps: [],
   };
 }
 
@@ -587,19 +587,19 @@ function summarizeDrugMetrics(drugStats) {
     obesity: 0,
     muscle: 0,
     cardiovascular: 0,
-    aging: 0,
+    senescence: 0,
     ...(drugStats.tabVisits ?? {}),
   };
   const obesitySteps = drugStats.obesitySteps ?? [];
   const muscleSteps = drugStats.muscleSteps ?? [];
   const cardiovascularSteps = drugStats.cardiovascularSteps ?? [];
-  const agingSteps = drugStats.agingSteps ?? [];
+  const senescenceSteps = drugStats.senescenceSteps ?? [];
   const synthesisSteps = drugStats.synthesisSteps ?? [];
   const obesityTotal = DRUG_MODULES.testosterona?.synthesis?.steps?.length ?? 0;
   const synthesisTotal = DRUG_MODULES.testosterona?.synthesis?.steps?.length ?? 0;
   const muscleTotal = DRUG_MODULES.testosterona?.muscle?.steps?.length ?? 0;
   const cardiovascularTotal = DRUG_MODULES.testosterona?.cardiovascular?.steps?.length ?? 0;
-  const agingTotal = DRUG_MODULES.testosterona?.aging?.steps?.length ?? 0;
+  const senescenceTotal = DRUG_MODULES.testosterona?.senescence?.steps?.length ?? 0;
   const tabsVisited = TAB_VIEW_IDS.filter((id) => (tabVisits[id] ?? 0) > 0).length;
 
   return {
@@ -613,8 +613,8 @@ function summarizeDrugMetrics(drugStats) {
     muscleTotalSteps: muscleTotal,
     cardiovascularStepsExplored: cardiovascularSteps.length,
     cardiovascularTotalSteps: cardiovascularTotal,
-    agingStepsExplored: agingSteps.length,
-    agingTotalSteps: agingTotal,
+    senescenceStepsExplored: senescenceSteps.length,
+    senescenceTotalSteps: senescenceTotal,
     synthesisStepsExplored: synthesisSteps.length,
     synthesisTotalSteps: synthesisTotal,
     hasActivity:
@@ -622,7 +622,7 @@ function summarizeDrugMetrics(drugStats) {
       obesitySteps.length > 0 ||
       muscleSteps.length > 0 ||
       cardiovascularSteps.length > 0 ||
-      agingSteps.length > 0 ||
+      senescenceSteps.length > 0 ||
       synthesisSteps.length > 0,
   };
 }
@@ -635,7 +635,7 @@ function buildMetricsCardsHtml(drugStats, drugLabel) {
       <h4 class="professor-card__title">${drugLabel} · Pestañas visitadas</h4>
       <p class="professor-card__value">${summary.tabsVisited}/5</p>
       <p class="professor-card__meta">
-        Síntesis ${summary.tabVisits.synthesis ?? 0} · Obesidad ${summary.tabVisits.obesity ?? 0} · Músculo ${summary.tabVisits.muscle ?? 0} · CV ${summary.tabVisits.cardiovascular ?? 0} · Envej ${summary.tabVisits.aging ?? 0}
+        Síntesis ${summary.tabVisits.synthesis ?? 0} · Obesidad ${summary.tabVisits.obesity ?? 0} · Músculo ${summary.tabVisits.muscle ?? 0} · CV ${summary.tabVisits.cardiovascular ?? 0} · Senesc ${summary.tabVisits.senescence ?? 0}
       </p>
     </article>
     <article class="professor-card professor-card--lavender">
@@ -654,9 +654,9 @@ function buildMetricsCardsHtml(drugStats, drugLabel) {
       <p class="professor-card__meta">Pasos del diagrama testosterona–CV (Thirumalai 2022)</p>
     </article>
     <article class="professor-card professor-card--sky">
-      <h4 class="professor-card__title">${drugLabel} · Envejecimiento</h4>
-      <p class="professor-card__value">${summary.agingStepsExplored}/${summary.agingTotalSteps}</p>
-      <p class="professor-card__meta">Pasos del diagrama testosterona–envejecimiento (Anawalt 2022)</p>
+      <h4 class="professor-card__title">${drugLabel} · Senescencia celular</h4>
+      <p class="professor-card__value">${summary.senescenceStepsExplored}/${summary.senescenceTotalSteps}</p>
+      <p class="professor-card__meta">Pasos del diagrama SAMP8/eNOS/SIRT1 (Ota 2012 · modelo animal)</p>
     </article>
   `;
 }
@@ -790,7 +790,7 @@ function buildTestosteronaRecommendations(summary) {
 
   if (!summary.hasActivity) {
     tips.push(
-      "Recorre las 5 pestañas: Síntesis, Obesidad, Músculo, Salud cardiovascular y Testosterona y envejecimiento."
+      "Recorre las 5 pestañas: Síntesis, Obesidad, Músculo, Salud cardiovascular y Testosterona y senescencia celular."
     );
     return tips;
   }
@@ -831,14 +831,14 @@ function buildTestosteronaRecommendations(summary) {
       `Salud cardiovascular: explora los ${summary.cardiovascularTotalSteps} pasos del diagrama (llevas ${summary.cardiovascularStepsExplored}).`
     );
   }
-  if ((summary.tabVisits.aging ?? 0) === 0) {
+  if ((summary.tabVisits.senescence ?? 0) === 0) {
     tips.push(
-      "Envejecimiento: repasa eje HPT envejecido, hipogonadismo secundario vs primario y manejo clínico (Anawalt & Matsumoto 2022)."
+      "Senescencia celular: repasa modelo SAMP8 (ratón), eje eNOS/SIRT1 y crosstalk endotelio–neurona; distingue evidencia animal vs humana (Ota 2012)."
     );
   }
-  if (summary.agingStepsExplored < summary.agingTotalSteps) {
+  if (summary.senescenceStepsExplored < summary.senescenceTotalSteps) {
     tips.push(
-      `Envejecimiento: explora los ${summary.agingTotalSteps} pasos del diagrama (llevas ${summary.agingStepsExplored}).`
+      `Senescencia celular: explora los ${summary.senescenceTotalSteps} pasos del diagrama (llevas ${summary.senescenceStepsExplored}).`
     );
   }
   if (
@@ -847,7 +847,7 @@ function buildTestosteronaRecommendations(summary) {
     summary.obesityStepsExplored >= summary.obesityTotalSteps &&
     summary.muscleStepsExplored >= summary.muscleTotalSteps &&
     summary.cardiovascularStepsExplored >= summary.cardiovascularTotalSteps &&
-    summary.agingStepsExplored >= summary.agingTotalSteps
+    summary.senescenceStepsExplored >= summary.senescenceTotalSteps
   ) {
     tips.push("Excelente recorrido. Refuerza casos clínicos: sarcopenia, hipogonadismo, obesidad y decisión de terapia con testosterona.");
   }
@@ -898,7 +898,7 @@ function pdfDrawDrugModuleSection(doc, y, drugLabel, summary, margin, contentWid
 
   const cardW = (contentWidth - 4) / 2;
   const tabsValue = `${summary.tabsVisited}/5`;
-  const tabsMeta = `Sintesis ${summary.tabVisits.synthesis ?? 0} | Obesidad ${summary.tabVisits.obesity ?? 0} | Musculo ${summary.tabVisits.muscle ?? 0} | CV ${summary.tabVisits.cardiovascular ?? 0} | Envej ${summary.tabVisits.aging ?? 0}`;
+  const tabsMeta = `Sintesis ${summary.tabVisits.synthesis ?? 0} | Obesidad ${summary.tabVisits.obesity ?? 0} | Musculo ${summary.tabVisits.muscle ?? 0} | CV ${summary.tabVisits.cardiovascular ?? 0} | Senesc ${summary.tabVisits.senescence ?? 0}`;
   const muscleValue = `${summary.muscleStepsExplored}/${summary.muscleTotalSteps}`;
   const muscleMeta =
     summary.muscleStepsExplored === 0
@@ -1121,30 +1121,30 @@ function loadDrugData(drugId) {
   OBESITY_DATA = mod.obesity;
   MUSCLE_DATA = mod.muscle;
   CARDIOVASCULAR_DATA = mod.cardiovascular;
-  AGING_DATA = mod.aging;
+  SENESCENCE_DATA = mod.senescence;
   synthesisStepById = Object.fromEntries(SYNTHESIS_DATA.steps.map((s) => [s.id, s]));
   muscleStepById = Object.fromEntries(MUSCLE_DATA.steps.map((s) => [s.id, s]));
   cardiovascularStepById = Object.fromEntries(CARDIOVASCULAR_DATA.steps.map((s) => [s.id, s]));
-  agingStepById = Object.fromEntries(AGING_DATA.steps.map((s) => [s.id, s]));
+  senescenceStepById = Object.fromEntries(SENESCENCE_DATA.steps.map((s) => [s.id, s]));
   activeSynthesisStepId = SYNTHESIS_DATA.steps[0].id;
   activeMuscleStepId = MUSCLE_DATA.steps[0].id;
   activeCardiovascularStepId = CARDIOVASCULAR_DATA.steps[0].id;
-  activeAgingStepId = AGING_DATA.steps[0].id;
+  activeSenescenceStepId = SENESCENCE_DATA.steps[0].id;
 }
 
 function getDiagramContext(viewId = activeView) {
-  if (viewId === "aging") {
+  if (viewId === "senescence") {
     return {
-      viewId: "aging",
-      data: AGING_DATA,
-      stepMap: agingStepById,
-      container: els.agingDiagram,
-      layerKey: DIAGRAM_LAYERS.aging,
-      getActiveStepId: () => activeAgingStepId,
+      viewId: "senescence",
+      data: SENESCENCE_DATA,
+      stepMap: senescenceStepById,
+      container: els.senescenceDiagram,
+      layerKey: DIAGRAM_LAYERS.senescence,
+      getActiveStepId: () => activeSenescenceStepId,
       setActiveStepId: (id) => {
-        activeAgingStepId = id;
+        activeSenescenceStepId = id;
       },
-      statsKey: "agingSteps",
+      statsKey: "senescenceSteps",
       showObesity: false,
     };
   }
@@ -1229,13 +1229,13 @@ function getStudyEls(viewId) {
       card: els.cardiovascularStudyCard,
     };
   }
-  if (viewId === "aging") {
+  if (viewId === "senescence") {
     return {
-      step: els.agingStudyStep,
-      title: els.agingStudyTitle,
-      bullets: els.agingStudyBullets,
-      tipText: els.agingStudyTipText,
-      card: els.agingStudyCard,
+      step: els.senescenceStudyStep,
+      title: els.senescenceStudyTitle,
+      bullets: els.senescenceStudyBullets,
+      tipText: els.senescenceStudyTipText,
+      card: els.senescenceStudyCard,
     };
   }
   return {
@@ -1255,7 +1255,7 @@ function getAbbreviationsForView(viewId) {
   if (viewId === "obesity") return getMergedAbbreviations();
   if (viewId === "muscle") return MUSCLE_DATA?.abbreviations ?? {};
   if (viewId === "cardiovascular") return CARDIOVASCULAR_DATA?.abbreviations ?? {};
-  if (viewId === "aging") return AGING_DATA?.abbreviations ?? {};
+  if (viewId === "senescence") return SENESCENCE_DATA?.abbreviations ?? {};
   return SYNTHESIS_DATA?.abbreviations ?? {};
 }
 
@@ -1311,11 +1311,11 @@ function updateDiagramChrome() {
   const isObesity = activeView === "obesity";
   const isMuscle = activeView === "muscle";
   const isCardiovascular = activeView === "cardiovascular";
-  const isAging = activeView === "aging";
+  const isSenescence = activeView === "senescence";
   const isSecondaryDiagram = SECONDARY_VIEW_IDS.has(activeView);
   if (els.diagramHeading) {
-    if (isAging) {
-      els.diagramHeading.textContent = "Andrógenos, envejecimiento e hipogonadismo";
+    if (isSenescence) {
+      els.diagramHeading.textContent = "Senescencia celular · modelo animal y traducción humana";
     } else if (isCardiovascular) {
       els.diagramHeading.textContent = "Testosterona y enfermedad cardiovascular";
     } else if (isMuscle) {
@@ -1331,7 +1331,7 @@ function updateDiagramChrome() {
     if (isObesity) source = OBESITY_DATA?.source;
     if (isMuscle) source = MUSCLE_DATA?.source;
     if (isCardiovascular) source = CARDIOVASCULAR_DATA?.source;
-    if (isAging) source = AGING_DATA?.source;
+    if (isSenescence) source = SENESCENCE_DATA?.source;
     if (source) {
       els.diagramSource.textContent = source.doi
         ? `${source.full} DOI: ${source.doi}`
@@ -1348,14 +1348,14 @@ function updateDiagramChrome() {
   if (els.cardiovascularDiagram) {
     els.cardiovascularDiagram.hidden = !isCardiovascular;
   }
-  if (els.agingDiagram) {
-    els.agingDiagram.hidden = !isAging;
+  if (els.senescenceDiagram) {
+    els.senescenceDiagram.hidden = !isSenescence;
   }
   if (els.synthesisStudyCard) els.synthesisStudyCard.hidden = isObesity || isSecondaryDiagram;
   if (els.obesityStudyCard) els.obesityStudyCard.hidden = !isObesity;
   if (els.muscleStudyCard) els.muscleStudyCard.hidden = !isMuscle;
   if (els.cardiovascularStudyCard) els.cardiovascularStudyCard.hidden = !isCardiovascular;
-  if (els.agingStudyCard) els.agingStudyCard.hidden = !isAging;
+  if (els.senescenceStudyCard) els.senescenceStudyCard.hidden = !isSenescence;
 }
 
 function escapeHtml(text) {
@@ -1422,7 +1422,7 @@ function recordTabVisit(viewId) {
   if (!activeDrugId || !TAB_VIEW_IDS.includes(viewId)) return;
   const stats = getDrugStats();
   if (!stats.tabVisits) {
-    stats.tabVisits = { synthesis: 0, obesity: 0, muscle: 0, cardiovascular: 0, aging: 0 };
+    stats.tabVisits = { synthesis: 0, obesity: 0, muscle: 0, cardiovascular: 0, senescence: 0 };
   }
   stats.tabVisits[viewId] = (stats.tabVisits[viewId] ?? 0) + 1;
   saveDrugStats(activeDrugId, stats);
@@ -1603,7 +1603,7 @@ function renderAllDiagrams() {
   renderDiagram("synthesis");
   renderDiagram("muscle");
   renderDiagram("cardiovascular");
-  renderDiagram("aging");
+  renderDiagram("senescence");
 }
 
 function drawConnections() {
@@ -1879,7 +1879,7 @@ function renderProfessorCards(registry, store) {
             Obesidad ${summary.obesityStepsExplored}/${summary.obesityTotalSteps} ·
             Músculo ${summary.muscleStepsExplored}/${summary.muscleTotalSteps} ·
             CV ${summary.cardiovascularStepsExplored}/${summary.cardiovascularTotalSteps} ·
-            Envej ${summary.agingStepsExplored}/${summary.agingTotalSteps}
+            Senesc ${summary.senescenceStepsExplored}/${summary.senescenceTotalSteps}
           </p>
         </article>
       `;
@@ -1971,7 +1971,7 @@ function getAbbrevDictionary(viewId = activeView) {
   if (viewId === "obesity") return getMergedAbbreviations();
   if (viewId === "muscle") return MUSCLE_DATA?.abbreviations ?? null;
   if (viewId === "cardiovascular") return CARDIOVASCULAR_DATA?.abbreviations ?? null;
-  if (viewId === "aging") return AGING_DATA?.abbreviations ?? null;
+  if (viewId === "senescence") return SENESCENCE_DATA?.abbreviations ?? null;
   if (viewId === "synthesis") return SYNTHESIS_DATA?.abbreviations ?? null;
   if (viewId === "lock") return getActiveModule()?.physiologyLock?.abbreviations ?? null;
   return null;
@@ -1990,7 +1990,7 @@ function handleSiglaClick(event) {
   if (btn.closest("#obesity-study-card")) viewId = "obesity";
   if (btn.closest("#muscle-study-card")) viewId = "muscle";
   if (btn.closest("#cardiovascular-study-card")) viewId = "cardiovascular";
-  if (btn.closest("#aging-study-card")) viewId = "aging";
+  if (btn.closest("#senescence-study-card")) viewId = "senescence";
   if (btn.closest("#physiology-lock")) viewId = "lock";
 
   const abbr = getAbbrevFromKey(btn.dataset.abbrKey, viewId);
